@@ -3,6 +3,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from "recharts";
 import { supabase } from "./supabaseClient";
+import './App.css';
 
 function entryToRow(entry, userId) {
   return {
@@ -123,27 +124,13 @@ function AuthScreen() {
 
   return (
     <div className="mt-app">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Karla:wght@400;500;700&display=swap');
-        .mt-app { font-family: 'Karla', -apple-system, sans-serif; background: #F3EFE6; color: #2B2620; min-height: 100vh; }
-        .mt-auth-shell { max-width: 360px; margin: 0 auto; padding: 4rem 1.5rem; }
-        .mt-title { font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 2rem; margin: 0 0 0.25rem; }
-        .mt-subtitle { font-size: 0.95rem; color: #6B6357; margin: 0 0 2rem; }
-        .mt-label-block { display: block; font-size: 0.9rem; margin: 1rem 0 0.35rem; color: #6B6357; }
-        .mt-text-input { width: 100%; font-family: 'Karla', sans-serif; font-size: 0.95rem; padding: 0.6rem 0.7rem; border: 1px solid #DAD3C4; border-radius: 4px; background: #fff; box-sizing: border-box; color: #2B2620; }
-        .mt-btn { font-family: 'Karla', sans-serif; font-size: 0.9rem; padding: 0.65rem 1.4rem; border-radius: 4px; border: 1px solid #4E6B5C; background: #4E6B5C; color: #fff; cursor: pointer; width: 100%; margin-top: 1.5rem; }
-        .mt-btn:hover { background: #3E5A4C; }
-        .mt-auth-switch { background: none; border: none; color: #4E6B5C; font-size: 0.85rem; cursor: pointer; padding: 0; margin-top: 1rem; text-decoration: underline; }
-        .mt-status { font-size: 0.85rem; color: #4E6B5C; margin-top: 0.75rem; }
-        .mt-status-error { font-size: 0.85rem; color: #A65B4E; margin-top: 0.75rem; }
-      `}</style>
       <div className="mt-auth-shell">
         <h1 className="mt-title">MoodTracker</h1>
         <p className="mt-subtitle">
           {mode === "signin" ? "Melde dich an, um auf deine Daten zuzugreifen." : "Erstelle ein Konto, um loszulegen."}
         </p>
         <form onSubmit={handleSubmit}>
-          <label className="mt-label-block" style={{ marginTop: 0 }}>E-Mail</label>
+          <label className="mt-label-block mt-no-mt">E-Mail</label>
           <input type="email" className="mt-text-input" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" />
           <label className="mt-label-block">Passwort</label>
           <input type="password" className="mt-text-input" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Mindestens 6 Zeichen" />
@@ -251,6 +238,8 @@ export default function MoodTracker() {
   const [dayFormForceOpen, setDayFormForceOpen] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
   const pickerRef = useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [dataTab, setDataTab] = useState("tage");
 
   const [form, setForm] = useState({
     date: defaultWeekday(),
@@ -611,8 +600,8 @@ export default function MoodTracker() {
 
   if (session === undefined) {
     return (
-      <div className="mt-app" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <p style={{ fontFamily: "Karla, sans-serif", color: "#6B6357" }}>Lädt …</p>
+      <div className="mt-app mt-center-screen">
+        <p className="mt-loader-text">Lädt …</p>
       </div>
     );
   }
@@ -623,99 +612,48 @@ export default function MoodTracker() {
 
   return (
     <div className="mt-app">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Karla:wght@400;500;700&display=swap');
-        .mt-app {
-          font-family: 'Karla', -apple-system, sans-serif;
-          background: #F3EFE6;
-          color: #2B2620;
-          min-height: 100%;
-          padding: 0;
-        }
-        .mt-shell { max-width: 880px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
-        .mt-title { font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 2rem; margin: 0 0 0.25rem; letter-spacing: -0.01em; }
-        .mt-subtitle { font-size: 0.95rem; color: #6B6357; margin: 0 0 2rem; }
-        .mt-nav { display: flex; gap: 0; border-bottom: 1px solid #DAD3C4; margin-bottom: 2rem; }
-        .mt-nav-item { font-family: 'Karla', sans-serif; font-size: 0.95rem; padding: 0.75rem 0; margin-right: 2rem; background: none; border: none; border-bottom: 2px solid transparent; color: #8A8272; cursor: pointer; }
-        .mt-nav-item.active { color: #2B2620; border-bottom-color: #4E6B5C; font-weight: 500; }
-        .mt-card { background: #FBF9F4; border: 1px solid #E4DECF; border-radius: 6px; padding: 1.5rem; margin-bottom: 1.25rem; }
-        .mt-field-label { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.4rem; }
-        .mt-field-label span:last-child { font-weight: 500; }
-        .mt-slider-row { margin-bottom: 1.4rem; }
-        .mt-slider-row input[type=range] { width: 100%; accent-color: var(--fcolor, #4E6B5C); }
-        .mt-textarea, .mt-text-input { width: 100%; font-family: 'Karla', sans-serif; font-size: 0.95rem; padding: 0.6rem 0.7rem; border: 1px solid #DAD3C4; border-radius: 4px; background: #fff; box-sizing: border-box; color: #2B2620; }
-        .mt-textarea { min-height: 70px; resize: vertical; }
-        .mt-label-block { display: block; font-size: 0.9rem; margin: 1rem 0 0.35rem; color: #6B6357; }
-        .mt-btn { font-family: 'Karla', sans-serif; font-size: 0.9rem; padding: 0.65rem 1.4rem; border-radius: 4px; border: 1px solid #4E6B5C; background: #4E6B5C; color: #fff; cursor: pointer; }
-        .mt-btn:hover { background: #3E5A4C; }
-        .mt-btn-secondary { background: transparent; color: #2B2620; border: 1px solid #DAD3C4; }
-        .mt-btn-secondary:hover { background: #F0ECE2; }
-        .mt-status { font-size: 0.85rem; color: #4E6B5C; margin-top: 0.75rem; }
-        .mt-section-heading { font-family: 'Fraunces', Georgia, serif; font-size: 1.15rem; margin: 0 0 1rem; }
-        .mt-entry-item { border-bottom: 1px solid #E4DECF; padding: 0.9rem 1.5rem; margin: 0 -1.5rem; cursor: pointer; }
-        .mt-entry-item:last-child { border-bottom: none; }
-        .mt-entry-item:nth-of-type(odd) { background: #F1EFEA; }
-        .mt-entry-item:hover { filter: brightness(0.97); }
-        .mt-entry-top { display: flex; justify-content: space-between; align-items: center; }
-        .mt-icon-btn { background: none; border: none; color: #A65B4E; cursor: pointer; padding: 4px; display: flex; align-items: center; border-radius: 4px; }
-        .mt-icon-btn:hover { background: rgba(166, 91, 78, 0.12); }
-        .mt-entry-date { font-weight: 500; font-size: 0.9rem; }
-        .mt-entry-values { font-size: 0.82rem; color: #6B6357; margin-top: 0.25rem; }
-        .mt-entry-note { font-size: 0.88rem; margin-top: 0.4rem; }
-        .mt-empty { color: #8A8272; font-size: 0.9rem; padding: 1rem 0; }
-        .mt-toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 0; border-bottom: 1px solid #E4DECF; }
-        .mt-toggle-row:last-child { border-bottom: none; }
-        .mt-note-text { font-size: 0.88rem; line-height: 1.6; color: #4A4438; }
-        .mt-corr { font-size: 0.88rem; color: #4A4438; margin-top: 0.5rem; }
-        .mt-checkblock { margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid #E4DECF; }
-        .mt-check-heading { font-family: 'Fraunces', Georgia, serif; font-size: 1rem; font-weight: 500; margin: 0 0 0.75rem; }
-        .mt-check-sub { font-family: 'Karla', sans-serif; font-size: 0.78rem; font-weight: 400; color: #8A8272; margin-left: 0.5rem; }
-        .mt-segmented { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.4rem; }
-        .mt-segment { font-family: 'Karla', sans-serif; font-size: 0.85rem; padding: 0.45rem 0.9rem; border: 1px solid #DAD3C4; border-radius: 4px; background: #fff; color: #6B6357; cursor: pointer; }
-        .mt-segment:hover { border-color: #B9B097; }
-        .mt-segment.active { background: #4E6B5C; border-color: #4E6B5C; color: #fff; }
-        .mt-datepicker { position: relative; display: inline-block; margin-bottom: 1.5rem; }
-        .mt-date-trigger { font-family: 'Karla', sans-serif; font-size: 0.9rem; padding: 0.55rem 0.75rem; border: 1px solid #DAD3C4; border-radius: 4px; background: #fff; cursor: pointer; color: #2B2620; width: auto; text-align: left; }
-        .mt-date-trigger:hover { border-color: #B9B097; }
-        .mt-date-popover { position: absolute; top: calc(100% + 6px); left: 0; z-index: 10; background: #FBF9F4; border: 1px solid #DAD3C4; border-radius: 6px; padding: 0.9rem; box-shadow: 0 4px 16px rgba(43,38,32,0.14); width: 260px; }
-        .mt-date-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; font-size: 0.85rem; font-weight: 500; }
-        .mt-date-header button { background: none; border: none; font-size: 1rem; cursor: pointer; color: #6B6357; padding: 0.2rem 0.5rem; }
-        .mt-date-header button:hover { color: #2B2620; }
-        .mt-date-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); font-size: 0.72rem; color: #8A8272; text-align: center; margin-bottom: 0.3rem; }
-        .mt-date-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-        .mt-date-cell { position: relative; font-family: 'Karla', sans-serif; font-size: 0.82rem; text-align: center; padding: 0.4rem 0; border: none; background: none; border-radius: 4px; cursor: pointer; color: #2B2620; }
-        .mt-date-cell:hover:not(:disabled) { background: #EFE9DA; }
-        .mt-date-cell.selected { background: #4E6B5C; color: #fff; }
-        .mt-date-cell.weekend { color: #C9C2B2; cursor: not-allowed; }
-        .mt-date-cell.empty { visibility: hidden; }
-        .mt-date-cell.has-entry::after { content: ""; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: #4E6B5C; }
-        .mt-date-cell.selected.has-entry::after { background: #fff; }
-      `}</style>
 
       <div className="mt-shell">
-        <h1 className="mt-title">MoodTracker</h1>
-        <p className="mt-subtitle">Deine Stimmung und die Faktoren dahinter, im Blick.</p>
-
-        <nav className="mt-nav">
-          {NAV.map((n) => (
-            <button
-              key={n.key}
-              className={`mt-nav-item ${view === n.key ? "active" : ""}`}
-              onClick={() => setView(n.key)}
-            >
-              {n.label}
+        <div className="mt-shell-header">
+          <div>
+            <h1 className="mt-title">MoodTracker</h1>
+            <p className="mt-subtitle">Deine Stimmung und die Faktoren dahinter, im Blick.</p>
+          </div>
+          <div className="mt-hamburger-wrap">
+            <button className="mt-hamburger" aria-label="Menü" onClick={() => setMenuOpen((s) => !s)}>
+              <span></span>
+              <span></span>
+              <span></span>
             </button>
-          ))}
-        </nav>
+            {menuOpen && (
+              <div className="mt-hamburger-menu">
+                <button className="mt-hamburger-item" onClick={() => { setView('datenerfassung'); setMenuOpen(false); }}>Datenerfassung</button>
+                <button className="mt-hamburger-item" onClick={() => { setView('auswertung'); setMenuOpen(false); }}>Auswertungen</button>
+                <button className="mt-hamburger-item" onClick={() => { setView('diverses'); setMenuOpen(false); }}>Diverses</button>
+                <button className="mt-hamburger-item" onClick={() => { setMenuOpen(false); handleSignOut(); }}>Abmelden</button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <nav className="mt-nav" aria-hidden="true" />
+
+        {/* Datenerfassung tabs shown only on Datenerfassung page */}
+        {view === 'datenerfassung' && (
+          <div className="mt-data-tabs">
+            <button type="button" className={`mt-data-tab ${dataTab === 'tage' ? 'active' : ''}`} onClick={() => setDataTab('tage')}>Tagesüberblick</button>
+            <button type="button" className={`mt-data-tab ${dataTab === 'woche' ? 'active' : ''}`} onClick={() => setDataTab('woche')}>Wochenrückblick</button>
+          </div>
+        )}
 
         {loading ? (
           <p className="mt-empty">Daten werden geladen …</p>
         ) : (
           <>
-            {view === "tage" && (
+            {(view === "tage" || (view === "datenerfassung" && dataTab === "tage")) && (
               <>
               <div className="mt-card">
-                <label className="mt-label-block" style={{ marginTop: 0 }}>Datum</label>
+                <label className="mt-label-block mt-no-mt">Datum</label>
                 <div className="mt-datepicker" ref={pickerRef}>
                   <button
                     type="button"
@@ -754,7 +692,7 @@ export default function MoodTracker() {
                 {entries.some((e) => e.date === form.date) || dayFormForceOpen ? (
                   <>
                 {activeSupportFactors(settings).length > 0 && (
-                  <div style={{ marginTop: "1.5rem" }}>
+                  <div className="mt-mt-1-5">
                     {activeSupportFactors(settings).map((f) => (
                       <div className="mt-slider-row" key={f.key} style={{ "--fcolor": f.color }}>
                         <div className="mt-field-label">
@@ -796,7 +734,7 @@ export default function MoodTracker() {
                     </div>
                   ))}
 
-                  <div className="mt-field-label" style={{ marginBottom: "0.4rem" }}>
+                  <div className="mt-field-label mt-mb-0-4">
                     <span>Tagesform</span>
                   </div>
                   <div className="mt-segmented">
@@ -812,7 +750,7 @@ export default function MoodTracker() {
                     ))}
                   </div>
 
-                  <div className="mt-field-label" style={{ marginBottom: "0.4rem" }}>
+                  <div className="mt-field-label mt-mb-0-4">
                     <span>Tagesgestaltung</span>
                   </div>
                   <div className="mt-segmented">
@@ -848,10 +786,9 @@ export default function MoodTracker() {
                   <label className="mt-label-block">Arbeitsstunden</label>
                   <input
                     type="number"
-                    className="mt-text-input"
-                    style={{ maxWidth: "160px" }}
-                    min="0" max="24" step="0.25"
-                    placeholder="z.B. 7.5"
+                    className="mt-text-input mt-maxw-160"
+                                        min="0" max="24" step="0.25"
+                                        placeholder="z.B. 7.5"
                     value={form.checkoutArbeitsstunden}
                     onChange={(e) => updateForm("checkoutArbeitsstunden", e.target.value)}
                   />
@@ -859,10 +796,9 @@ export default function MoodTracker() {
                   <label className="mt-label-block">Arbeitsstunden inkl. Pausen</label>
                   <input
                     type="number"
-                    className="mt-text-input"
-                    style={{ maxWidth: "160px" }}
-                    min="0" max="24" step="0.25"
-                    placeholder="z.B. 8.5"
+                    className="mt-text-input mt-maxw-160"
+                                        min="0" max="24" step="0.25"
+                                        placeholder="z.B. 8.5"
                     value={form.checkoutArbeitsstundenInklPausen}
                     onChange={(e) => updateForm("checkoutArbeitsstundenInklPausen", e.target.value)}
                   />
@@ -876,7 +812,7 @@ export default function MoodTracker() {
                   />
                 </div>
 
-                <div style={{ marginTop: "1.5rem" }}>
+                <div className="mt-mt-1-5">
                   <button className="mt-btn" onClick={handleSave}>
                     {entries.some((e) => e.date === form.date) ? "Eintrag aktualisieren" : "Eintrag speichern"}
                   </button>
@@ -884,7 +820,7 @@ export default function MoodTracker() {
                 </div>
                   </>
                 ) : (
-                  <div style={{ textAlign: "center", padding: "1.5rem 0" }}>
+                  <div className="mt-centered-padding">
                     <button className="mt-btn" onClick={() => setDayFormForceOpen(true)}>Eintrag erfassen</button>
                   </div>
                 )}
@@ -912,10 +848,10 @@ export default function MoodTracker() {
               </>
             )}
 
-            {view === "woche" && (
+            {(view === "woche" || (view === "datenerfassung" && dataTab === "woche")) && (
               <>
                 <div className="mt-card">
-                    <div className="mt-date-header" style={{ marginBottom: "1.5rem" }}>
+                    <div className="mt-date-header mt-mb-1-5">
                       <button type="button" onClick={prevReviewWeek} aria-label="Vorherige Woche">‹</button>
                       <span>Woche vom {weekRangeLabel(weekForm.weekStart)}</span>
                       <button type="button" onClick={nextReviewWeek} aria-label="Nächste Woche">›</button>
@@ -924,19 +860,19 @@ export default function MoodTracker() {
                     {weeklyReviews.some((r) => r.weekStart === weekForm.weekStart) || weekFormForceOpen ? (
                       <>
                     <h3 className="mt-check-heading">Wochenaufgabe</h3>
-                    <div className="mt-field-label" style={{ marginBottom: "0.4rem" }}><span>Machbar</span></div>
+                    <div className="mt-field-label mt-mb-0-4"><span>Machbar</span></div>
                     <div className="mt-segmented">
                       {JANEIN_OPTIONS.map((opt) => (
                         <button type="button" key={opt} className={`mt-segment ${weekForm.machbar === opt ? "active" : ""}`} onClick={() => updateWeekForm("machbar", opt)}>{opt}</button>
                       ))}
                     </div>
-                    <div className="mt-field-label" style={{ marginBottom: "0.4rem" }}><span>Attraktiv</span></div>
+                    <div className="mt-field-label mt-mb-0-4"><span>Attraktiv</span></div>
                     <div className="mt-segmented">
                       {JANEIN_OPTIONS.map((opt) => (
                         <button type="button" key={opt} className={`mt-segment ${weekForm.attraktiv === opt ? "active" : ""}`} onClick={() => updateWeekForm("attraktiv", opt)}>{opt}</button>
                       ))}
                     </div>
-                    <div className="mt-field-label" style={{ marginBottom: "0.4rem" }}><span>Verständlich</span></div>
+                    <div className="mt-field-label mt-mb-0-4"><span>Verständlich</span></div>
                     <div className="mt-segmented">
                       {JANEIN_OPTIONS.map((opt) => (
                         <button type="button" key={opt} className={`mt-segment ${weekForm.verstaendlich === opt ? "active" : ""}`} onClick={() => updateWeekForm("verstaendlich", opt)}>{opt}</button>
@@ -945,19 +881,19 @@ export default function MoodTracker() {
 
                     <div className="mt-checkblock">
                       <h3 className="mt-check-heading">Skills</h3>
-                      <div className="mt-field-label" style={{ marginBottom: "0.4rem" }}><span>Dauer der Konzentration</span></div>
+                      <div className="mt-field-label mt-mb-0-4"><span>Dauer der Konzentration</span></div>
                       <div className="mt-segmented">
                         {KONZENTRATION_OPTIONS.map((opt) => (
                           <button type="button" key={opt} className={`mt-segment ${weekForm.konzentration === opt ? "active" : ""}`} onClick={() => updateWeekForm("konzentration", opt)}>{opt}</button>
                         ))}
                       </div>
-                      <div className="mt-field-label" style={{ marginBottom: "0.4rem" }}><span>Umgang mit Fokusänderung</span></div>
+                      <div className="mt-field-label mt-mb-0-4"><span>Umgang mit Fokusänderung</span></div>
                       <div className="mt-segmented">
                         {UMGANG_OPTIONS.map((opt) => (
                           <button type="button" key={opt} className={`mt-segment ${weekForm.fokusaenderung === opt ? "active" : ""}`} onClick={() => updateWeekForm("fokusaenderung", opt)}>{opt}</button>
                         ))}
                       </div>
-                      <div className="mt-field-label" style={{ marginBottom: "0.4rem" }}><span>Umgang mit unerwarteter Aufgabe</span></div>
+                      <div className="mt-field-label mt-mb-0-4"><span>Umgang mit unerwarteter Aufgabe</span></div>
                       <div className="mt-segmented">
                         {UMGANG_OPTIONS.map((opt) => (
                           <button type="button" key={opt} className={`mt-segment ${weekForm.unerwarteteAufgabe === opt ? "active" : ""}`} onClick={() => updateWeekForm("unerwarteteAufgabe", opt)}>{opt}</button>
@@ -965,7 +901,7 @@ export default function MoodTracker() {
                       </div>
                     </div>
 
-                    <div style={{ marginTop: "1.5rem" }}>
+                    <div className="mt-mt-1-5">
                       <button className="mt-btn" onClick={handleSaveWeekly}>
                         {weeklyReviews.some((r) => r.weekStart === weekForm.weekStart) ? "Wochenrückblick aktualisieren" : "Wochenrückblick speichern"}
                       </button>
@@ -973,7 +909,7 @@ export default function MoodTracker() {
                     </div>
                       </>
                     ) : (
-                      <div style={{ textAlign: "center", padding: "1.5rem 0" }}>
+                      <div className="mt-centered-padding">
                         <button className="mt-btn" onClick={() => setWeekFormForceOpen(true)}>Eintrag erfassen</button>
                       </div>
                     )}
@@ -1008,7 +944,7 @@ export default function MoodTracker() {
                   {chartData.length === 0 ? (
                     <p className="mt-empty">Noch keine Einträge vorhanden. Trage zuerst ein paar Tage ein.</p>
                   ) : (
-                    <div style={{ width: "100%", height: 300 }}>
+                    <div className="mt-chart-frame">
                       <ResponsiveContainer>
                         <LineChart data={chartData}>
                           <CartesianGrid stroke="#E4DECF" strokeDasharray="3 3" />
@@ -1053,7 +989,7 @@ export default function MoodTracker() {
               <>
                 <div className="mt-card">
                   <h2 className="mt-section-heading">Einstellungen</h2>
-                  <p className="mt-note-text" style={{ marginBottom: "0.5rem" }}>
+                  <p className="mt-note-text mt-mb-0-5">
                     Stimmung und Energie werden immer erfasst. Diese zusätzlichen Faktoren kannst du an- oder abschalten.
                   </p>
                   {SUPPORT_FACTORS.map((f) => (
@@ -1077,7 +1013,7 @@ export default function MoodTracker() {
 
                 <div className="mt-card">
                   <h2 className="mt-section-heading">Export</h2>
-                  <p className="mt-note-text" style={{ marginBottom: "1rem" }}>
+                  <p className="mt-note-text mt-mb-1">
                     Lade alle deine Einträge als CSV-Datei herunter, z.B. für eine eigene Auswertung.
                   </p>
                   <button className="mt-btn mt-btn-secondary" onClick={exportCSV} disabled={entries.length === 0}>
@@ -1091,9 +1027,6 @@ export default function MoodTracker() {
                     Deine Einträge sind an dein Konto ({session.user.email}) gebunden und stehen dir
                     geräteübergreifend zur Verfügung. {entries.length} {entries.length === 1 ? "Eintrag" : "Einträge"} bisher erfasst.
                   </p>
-                  <button className="mt-btn mt-btn-secondary" style={{ marginTop: "1rem" }} onClick={handleSignOut}>
-                    Abmelden
-                  </button>
                 </div>
               </>
             )}
