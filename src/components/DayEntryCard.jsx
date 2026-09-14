@@ -1,11 +1,11 @@
-import TrashIcon from "../helpers/TrashIcon";
+import TrashIcon from "../helpers/TrashIcon.jsx";
 import {
   CHECK_METRICS,
   TAGESFORM_OPTIONS,
   TAGESGESTALTUNG_OPTIONS,
   formatDate,
   activeSupportFactors,
-} from "../constants";
+} from "../constants.js";
 
 export function DayEntryCard({
   form,

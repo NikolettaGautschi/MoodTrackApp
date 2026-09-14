@@ -1,5 +1,5 @@
-import TrashIcon from "../helpers/TrashIcon";
-import { JANEIN_OPTIONS, KONZENTRATION_OPTIONS, UMGANG_OPTIONS, weekRangeLabel } from "../constants";
+import TrashIcon from "../helpers/TrashIcon.jsx";
+import { JANEIN_OPTIONS, KONZENTRATION_OPTIONS, UMGANG_OPTIONS, weekRangeLabel } from "../constants.js";
 
 export function WeeklyReviewCard({
   weekForm,

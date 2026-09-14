@@ -1,5 +1,5 @@
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } from "recharts";
-import { activeSupportFactors } from "../constants";
+import { activeSupportFactors } from "../constants.js";
 
 export function AnalyticsCard({ chartData, hiddenSeries, toggleSeries, settings, sleepMoodCorr }) {
   return (

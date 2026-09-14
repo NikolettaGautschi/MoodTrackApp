@@ -1,12 +1,12 @@
 ﻿import { useState, useEffect, useMemo, useRef } from "react";
-import { supabase } from "./supabaseClient";
+import { supabase } from "./supabaseClient.js";
 import "./App.css";
-import { AuthScreen } from "./components/AuthScreen";
-import { DatePicker } from "./helpers/DatePicker";
-import { DayEntryCard } from "./components/DayEntryCard";
-import { WeeklyReviewCard } from "./components/WeeklyReviewCard";
-import { AnalyticsCard } from "./components/AnalyticsCard";
-import { SettingsCard } from "./components/SettingsCard";
+import { AuthScreen } from "./components/AuthScreen.jsx";
+import { DatePicker } from "./helpers/DatePicker.jsx";
+import { DayEntryCard } from "./components/DayEntryCard.jsx";
+import { WeeklyReviewCard } from "./components/WeeklyReviewCard.jsx";
+import { AnalyticsCard } from "./components/AnalyticsCard.jsx";
+import { SettingsCard } from "./components/SettingsCard.jsx";
 import {
   DEFAULT_SETTINGS,
   JANEIN_OPTIONS,
@@ -26,7 +26,7 @@ import {
   rowToEntry,
   rowToReview,
   uid,
-} from "./constants";
+} from "./constants.js";
 
 export default function MoodTracker() {
   const [session, setSession] = useState(undefined);

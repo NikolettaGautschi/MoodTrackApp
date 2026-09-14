@@ -1,4 +1,4 @@
-import { SUPPORT_FACTORS } from "../constants";
+import { SUPPORT_FACTORS } from "../constants.js";
 
 export function SettingsCard({ settings, persistSettings, entries, session, exportCSV }) {
   return (
